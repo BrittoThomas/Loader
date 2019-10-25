@@ -10,6 +10,9 @@ import UIKit
 
 class Loader: UIView {
     
+    let color1 = UIColor.red
+    let color2 = UIColor.blue
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -64,10 +67,10 @@ class Loader: UIView {
         
         if index % 2 == 0 {
             animation1.values = [0.5, 1]
-            animation2.values = [UIColor.theme.maroon.cgColor, UIColor.theme.blue.cgColor]
+            animation2.values = [color1, color2]
         }else{
             animation1.values = [1, 0.5]
-            animation2.values = [UIColor.theme.blue.cgColor, UIColor.theme.maroon.cgColor]
+            animation2.values = [color2, color1]
         }
         
         animation1.keyTimes = [0, 1]
