@@ -10,14 +10,35 @@ import UIKit
 
 class Loader: UIView {
     
-    static var shared = Loader.init(frame: CGRect.init(x: 0, y: 0, width: 50, height: 25))
-    
-    let color1 = UIColor.red.cgColor
-    let color2 = UIColor.blue.cgColor
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.clipsToBounds = true
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appMovedToBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appMovedToForground),
+                                               name: UIApplication.willEnterForegroundNotification,
+                                               object: nil)
+        
+        self.setup()
+    }
+    
+    @objc func appMovedToBackground() {
+        print("App moved to Background!")
+        self.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+    }
+    
+    @objc func appMovedToForground() {
+        print("App moved to Forground!")
+        self.setup()
+    }
+    
+    
+    func setup() {
         var frame1 = CGRect.init(origin: .zero, size: frame.size)
         frame1.size.width = self.bounds.height
         
@@ -25,11 +46,8 @@ class Loader: UIView {
         frame2.size.width = self.bounds.height
         frame2.origin.x = 25
         
-        
         self.addCircle(index:0, frame: frame1)
         self.addCircle(index:1, frame: frame2)
-        
-        self.clipsToBounds = true
     }
     
     func addCircle(index:Int, frame:CGRect) {
@@ -46,10 +64,10 @@ class Loader: UIView {
         
         if index % 2 == 0 {
             animation1.values = [0.5, 1]
-            animation2.values = [color1, color2]
+            animation2.values = [UIColor.theme.maroon.cgColor, UIColor.theme.blue.cgColor]
         }else{
             animation1.values = [1, 0.5]
-            animation2.values = [color2, color1]
+            animation2.values = [UIColor.theme.blue.cgColor, UIColor.theme.maroon.cgColor]
         }
         
         animation1.keyTimes = [0, 1]
@@ -70,6 +88,10 @@ class Loader: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
 }
